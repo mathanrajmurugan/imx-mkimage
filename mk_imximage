@@ -1,0 +1,51 @@
+##############################
+# SECO COMPILE HELPER SCRIPT #
+##############################
+
+BOARD=$1
+RAM=$2
+
+if [[ "$BOARD" == "c26" ]]; then
+	echo "######################"
+	echo "# Compile C26 u-boot #"
+	echo "######################"
+	make clean
+	rm iMX8QM/flash.bin
+	cd iMX8QM/
+	if [[ "$RAM" == "2gb" ]]; then
+		ln -sf ./scfw_tcm_2gb.bin ./scfw_tcm.bin 
+	elif [[ "$RAM" == "4gb" ]]; then
+                ln -sf ./scfw_tcm_4gb.bin ./scfw_tcm.bin
+	elif [[ "$RAM" == "8gb" ]]; then
+                ln -sf ./scfw_tcm_8gb.bin ./scfw_tcm.bin
+	else
+		echo "no RAM parameter selected:"
+		echo "available choices are:"
+		echo "./mk_imximage c26 2gb" 
+		echo "./mk_imximage c26 4gb" 
+		echo "./mk_imximage c26 8gb" 
+		exit
+	fi
+	cd -
+	make SOC=iMX8QM flash_spl
+elif [[ "$BOARD" == "c57" ]]; then
+	echo "######################"
+	echo "# Compile C57 u-boot #"
+	echo "######################"
+	make clean
+	rm iMX8QX/flash.bin
+	cd iMX8QX/
+	if [[ "$RAM" == "2gb" ]]; then
+		ln -sf ./scfw_tcm_2gb.bin ./scfw_tcm.bin 
+	elif [[ "$RAM" == "4gb" ]]; then
+                ln -sf ./scfw_tcm_4gb.bin ./scfw_tcm.bin
+	elif [[ "$RAM" == "8gb" ]]; then
+                ln -sf ./scfw_tcm_8gb.bin ./scfw_tcm.bin
+	else
+		echo "no RAM parameter selected:"
+	fi
+	cd -
+	make SOC=iMX8QX flash
+else
+	echo "Board $Board not recognized!"
+fi
